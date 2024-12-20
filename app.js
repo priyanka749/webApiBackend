@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.use("/api/User",UserRouter );
 app.use("/api/ServiceProvider",ServiceProviderRoute);
-// app.use("/api/ground",GroundRouter );
+
 
 // app.use("/",()=>{
 //     console.log("you r here")
