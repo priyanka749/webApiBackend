@@ -13,32 +13,23 @@ const providerSchema = new mongoose.Schema({
         type:String,
         required:false
         },
-    
-    Provider_name: {
-        type: String,
-        required: true,
-    },
-    
-    email: {
-        type: String,
-        required: true,
-        unique: true,  // Ensure email is unique
-        match: [/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/, 'Please enter a valid email address'],
-    },
-    phoneNumber: {
-        type: String,
-        required: true,  
-        unique: true,  
+        
+    bio:{
+        type:String,
+        required:true
     },
     category: {
         type: String,
         required: true,  
     },
-    password: {
-        type: String,
-        required: true,  
+    rating:{
+        type:Number,
+        required:false
+    },
+    
 
-    }
+
+   
 });
 
 const ServiceProvider = mongoose.model('Provider', providerSchema);

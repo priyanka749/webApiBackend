@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true, 
     },
+    
     location: {
         type: String,
         required: true,
@@ -24,7 +25,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-});
+    role:{
+        type:String,
+        enum: ["User", "Service Provider"],
+        required:true,
+}});
 
 const User = mongoose.model("users", userSchema);
 module.exports = User;
