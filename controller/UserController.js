@@ -26,8 +26,8 @@ const findById = async (req, res) => {
 const save = async (req, res) => {
     console.log("Request Body:", req.body);
     try {
-        const { name, email, phone_number, location, password } = req.body;
-        const user = new User({ name, email, phone_number, location, password });
+        const { name, email, phone_number, role,location, password } = req.body;
+        const user = new User({ name, email, phone_number,role, location, password });
 
         await user.save();
         console.log("User Saved:", user);
