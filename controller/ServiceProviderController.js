@@ -1,4 +1,3 @@
-// Import the Provider model
 const Provider = require("../model/ServiceProvider");
 
 // Find all providers
@@ -26,19 +25,16 @@ const findById = async (req, res) => {
 
 // Save a new provider
 const save = async (req, res) => {
-    console.log("Request Body:", req.body);
     try {
-        const { user_id, business_name, description, rating, services_offered, name, email, phoneNumber, category, password } = req.body;
-        const provider = new Provider({ user_id, business_name, description, rating, services_offered, name, email, phoneNumber, category, password });
+        const { userId, bio, category, rating, image } = req.body;
+
+        const provider = new Provider({ userId, bio, category, rating, image });
 
         await provider.save();
-        console.log("Provider Saved:", provider);
-
         res.status(201).json(provider);
     } catch (error) {
-        console.error("Error saving provider:", error);
         if (error.code === 11000) {
-            return res.status(400).json({ message: "Email or phone number already exists" });
+            return res.status(400).json({ message: "Duplicate entry: " + error.message });
         }
         res.status(400).json({ message: error.message });
     }
