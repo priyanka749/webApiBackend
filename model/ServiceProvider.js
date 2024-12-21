@@ -2,6 +2,18 @@ const mongoose = require("mongoose");
 
 const providerSchema = new mongoose.Schema({
     
+    
+     userId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'users',
+        required:true,
+        },
+
+    image:{
+        type:String,
+        required:false
+        },
+    
     Provider_name: {
         type: String,
         required: true,
@@ -15,16 +27,16 @@ const providerSchema = new mongoose.Schema({
     },
     phoneNumber: {
         type: String,
-        required: true,  // Phone number of the service provider
-        unique: true,  // Ensure phone number is unique
+        required: true,  
+        unique: true,  
     },
     category: {
         type: String,
-        required: true,  // Category of service (e.g., plumber, carpenter)
+        required: true,  
     },
     password: {
         type: String,
-        required: true,  // Password for the service provider
+        required: true,  
 
     }
 });
