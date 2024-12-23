@@ -24,7 +24,9 @@ const providerSchema = new mongoose.Schema({
     },
     rating:{
         type:Number,
-        required:false
+        required:false,
+        default:0,
+
     },
     location:{
         type:String,
