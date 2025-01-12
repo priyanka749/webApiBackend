@@ -1,6 +1,5 @@
 const Provider = require("../model/ServiceProvider");
 
-// Find all providers
 const findAll = async (req, res) => {
     try {
         const providers = await Provider.find();
@@ -10,7 +9,7 @@ const findAll = async (req, res) => {
     }
 };
 
-// Find provider by ID
+
 const findById = async (req, res) => {
     try {
         const provider = await Provider.findById(req.params.id);
@@ -23,7 +22,6 @@ const findById = async (req, res) => {
     }
 };
 
-// Save a new provider
 const save = async (req, res) => {
     try {
         const { userId, bio, category, rating,location, image } = req.body;
