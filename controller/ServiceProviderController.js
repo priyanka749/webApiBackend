@@ -24,9 +24,9 @@ const findById = async (req, res) => {
 
 const save = async (req, res) => {
     try {
-        const { userId, bio, category, rating,location, image } = req.body;
+        const { userId, bio, rating,location, image } = req.body;
 
-        const provider = new Provider({ userId, bio, category, rating, location, image });
+        const provider = new Provider({ userId, bio, rating, location, image });
 
         await provider.save();
         res.status(201).json(provider);
