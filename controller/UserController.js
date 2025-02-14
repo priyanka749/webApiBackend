@@ -1,4 +1,8 @@
 const User = require("../model/User");
+const path = require("path");
+const fs = require("fs");
+
+
 
 
 const findAll = async (req, res) => {
@@ -26,8 +30,8 @@ const findById = async (req, res) => {
 const save = async (req, res) => {
     console.log("Request Body:", req.body);
     try {
-        const { name, email, phone_number, role,location, password } = req.body;
-        const user = new User({ name, email, phone_number,role, location, password });
+        const { name, email, phone_number, role, skill,location, password } = req.body;
+        const user = new User({ name, email, phone_number,role,skill, location, password });
 
         await user.save();
         console.log("User Saved:", user);
@@ -76,3 +80,5 @@ module.exports = {
     update,
     deleteById,
 };
+
+
