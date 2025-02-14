@@ -18,10 +18,7 @@ const providerSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    category: {
-        type: String,
-        required: true,  
-    },
+  
     rating:{
         type:Number,
         required:false,
@@ -31,6 +28,10 @@ const providerSchema = new mongoose.Schema({
     location:{
         type:String,
         required:true
+    },
+    skills: {
+        type: [String],
+        required: true,
     },
     
 });
