@@ -32,9 +32,10 @@ const tempUserSchema = new Schema({
         type: String,
         trim: true,
     },
-    image: {
-        type: String,
-    },
+    
+    profileImage: {
+     type: String },
+
     bio: {
         type: String,
     },

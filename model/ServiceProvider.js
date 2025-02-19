@@ -1,41 +1,44 @@
 const mongoose = require("mongoose");
 
 const providerSchema = new mongoose.Schema({
-    
-    
-     userId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'users',
-        required:true,
-        },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  phoneNumber: {
+    type: String,  
+    unique: true,  // Prevent duplicate phone numbers
+    sparse: true,  // Allow multiple documents with `null` value for `phoneNumber`
+  },
+  bio: {
+    type: String,
+    required: true,
+  },
 
-    image:{
-        type:String,
-        required:false
-        },
-        
-    bio:{
-        type:String,
-        required:true
-    },
-  
-    rating:{
-        type:Number,
-        required:false,
-        default:0,
+  profileImage: { 
+  type: String },
 
-    },
-    location:{
-        type:String,
-        required:true
-    },
-    skills: {
-        type: [String],
-        required: true,
-    },
-    
+  rating:{ 
+  type: Number, default: 0 },
+ 
+  location: {
+    type: String,
+    required: true,
+  },
+  skills: {
+    type: [String],
+    required: true,
+  },
 });
 
-const ServiceProvider = mongoose.model('Provider', providerSchema);
-
+const ServiceProvider = mongoose.model("Provider", providerSchema);
 module.exports = ServiceProvider;

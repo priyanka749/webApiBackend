@@ -22,12 +22,11 @@ const {
 
   register,
   login,
-  
   updateuser,
   deleteuser,
   uploadImage,
   getMe,
-} = require("../controller/UserController");
+} = require("../controller/usercontroller");
 
 
 router.post("/uploadImage", upload, uploadImage);

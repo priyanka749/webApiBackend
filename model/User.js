@@ -1,33 +1,37 @@
 const mongoose = require("mongoose");
 
+
 const userSchema = new mongoose.Schema({
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-    },
-    phone_number: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-    },
-    password: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    role: {
-        type: String,
-        enum: ["User", "Service Provider"],
-        required: true,
-    },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
+  phone_number: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  profileImage: { 
+    type: String },
+  
+  
+  role: {
+    type: String,
+    enum: ["Customer", "Service Provider"],
+    required: true,
+  },
 });
 
-const User = mongoose.model("users", userSchema);
+const User = mongoose.model("User", userSchema); // Changed from "users" to "User"
 module.exports = User;
-
 
 
 // Encrypt password using bcrypt

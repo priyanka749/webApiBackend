@@ -1,73 +1,115 @@
-const Provider = require("../model/ServiceProvider");
+const ServiceProvider = require("../model/ServiceProvider");
+const User = require("../model/User");
+const cloudinary = require("../utils/cloudinary");
 
-const findAll = async (req, res) => {
-    try {
-        const providers = await Provider.find();
-        res.status(200).json(providers);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+// Fetch all service providers with filters and pagination
+const getServiceProviders = async (req, res) => {
+  try {
+    const { skill, minRating, maxRating } = req.query;
+
+    const query = {};
+    if (skill) query.skills = { $in: [skill] };
+    if (minRating) query.rating = { ...query.rating, $gte: Number(minRating) };
+    if (maxRating) query.rating = { ...query.rating, $lte: Number(maxRating) };
+
+    const providers = await ServiceProvider.find(query)
+      .populate("userId", "name email phoneNumber"); // Populate related user details
+
+    const formattedProviders = providers.map((provider) => ({
+      id: provider._id,
+      name: provider.name,
+      email: provider.email,
+      phoneNumber: provider.phoneNumber,
+      bio: provider.bio,
+      profileImage: provider.profileImage,
+      rating: provider.rating,
+      location: provider.location,
+      skills: provider.skills,
+    }));
+
+    res.status(200).json(formattedProviders);
+  } catch (error) {
+    console.error("Error fetching service providers:", error);
+    res.status(500).json([]);
+  }
 };
 
 
-const findById = async (req, res) => {
-    try {
-        const provider = await Provider.findById(req.params.id);
-        if (!provider) {
-            return res.status(404).json({ message: "Provider not found" });
-        }
-        res.status(200).json(provider);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+// Fetch specific service provider profile
+const getServiceProviderProfile = async (req, res) => {
+  try {
+    const providerId = req.params.id;
+    console.log("Fetching provider with ID:", providerId);  // Debugging log
+
+    const provider = await ServiceProvider.findById(providerId).populate("userId", "name email phoneNumber");
+    if (!provider) {
+      console.log("Provider not found for ID:", providerId);
+      return res.status(404).json({ message: "Service provider profile not found" });
     }
+
+    const profile = {
+      id: provider._id,
+      name: provider.name,
+      email: provider.email,
+      phoneNumber: provider.phoneNumber,
+      bio: provider.bio,
+      profileImage: provider.profileImage,
+      rating: provider.rating,
+      location: provider.location,
+      skills: provider.skills,
+    };
+
+    res.status(200).json({
+      message: "Service provider profile fetched successfully",
+      provider: profile,
+    });
+  } catch (error) {
+    console.error("Error fetching service provider profile:", error);
+    res.status(500).json({ message: "Failed to fetch service provider profile" });
+  }
 };
 
-const save = async (req, res) => {
-    try {
-        const { userId, bio, rating,location, image } = req.body;
+// Update service provider profile
+const updateServiceProviderProfile = async (req, res) => {
+  try {
+    const providerId = req.user.id; // Get authenticated provider ID from token
+    const { name, bio, location, skills } = req.body;
 
-        const provider = new Provider({ userId, bio, rating, location, image });
+    const updateFields = {};
+    if (name) updateFields.name = name;
+    if (bio) updateFields.bio = bio;
+    if (location) updateFields.location = location;
+    if (skills) updateFields.skills = skills;
 
-        await provider.save();
-        res.status(201).json(provider);
-    } catch (error) {
-        if (error.code === 11000) {
-            return res.status(400).json({ message: "Duplicate entry: " + error.message });
-        }
-        res.status(400).json({ message: error.message });
+    if (req.file) {
+      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+        folder: "provider-profile-images",
+      });
+      updateFields.profileImage = uploadResult.secure_url;
     }
-};
 
-// Update a provider by ID
-const update = async (req, res) => {
-    try {
-        const provider = await Provider.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!provider) {
-            return res.status(404).json({ message: "Provider not found" });
-        }
-        res.status(200).json(provider);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+    const updatedProvider = await ServiceProvider.findOneAndUpdate(
+      { userId: providerId },
+      { $set: updateFields },
+      { new: true }
+    );
 
-// Delete a provider by ID
-const deleteById = async (req, res) => {
-    try {
-        const provider = await Provider.findByIdAndDelete(req.params.id);
-        if (!provider) {
-            return res.status(404).json({ message: "Provider not found" });
-        }
-        res.status(200).json({ message: "Provider deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+    if (!updatedProvider) {
+      return res.status(404).json({ message: "Service provider not found" });
     }
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      provider: updatedProvider,
+    });
+  } catch (error) {
+    console.error("Error updating service provider profile:", error);
+    res.status(500).json({ message: "Failed to update service provider profile" });
+  }
 };
 
 module.exports = {
-    findAll,
-    findById,
-    save,
-    update,
-    deleteById,
-};
+    getServiceProviders,  // This corresponds to `findAll`
+    getServiceProviderProfile,
+    updateServiceProviderProfile,
+  };

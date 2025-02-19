@@ -1,5 +1,5 @@
 const express = require("express");
-const { register, verifyOtp, login} = require("../controller/AuthController");
+const { register, verifyOtp, login, getUserIdFromToken} = require("../controller/AuthController");
 const multer = require("multer");
 
 const router = express.Router();
@@ -18,6 +18,8 @@ const upload = multer({ storage: storage });
 router.post("/register", upload.single("image"), register);
 router.post("/verify-otp", verifyOtp);
 router.post("/login", login);
+router.post("/get-user-profile", getUserIdFromToken);
+
 
 
 module.exports = router;

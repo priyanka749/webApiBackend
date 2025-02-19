@@ -1,19 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const providerController = require("../controller/ServiceProviderController"); // Adjust the path as necessary
+const providerController = require("../controller/ServiceProviderController");
 
+// Get all providers
+router.get("/", providerController.getServiceProviders); // Use getServiceProviders, not findAll
 
-router.get("/", providerController.findAll);
+// Get provider by ID
+router.get("/:id", providerController.getServiceProviderProfile);
 
-
-router.get("/:id", providerController.findById);
-
-
-router.post("/", providerController.save);
-
-router.put("/:id", providerController.update);
-
-
-router.delete("/:id", providerController.deleteById);
+// Update provider profile
+router.put("/:id", providerController.updateServiceProviderProfile);
 
 module.exports = router;
