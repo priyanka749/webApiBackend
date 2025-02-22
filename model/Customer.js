@@ -34,7 +34,13 @@ const customerSchema = new Schema({
       type: String,
       required: true,
       trim: true,
+      
     },
+    email: {
+      type: String,
+      required: true,
+    },
+
     location: {
       type: String,
       required: true,
