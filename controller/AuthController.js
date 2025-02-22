@@ -99,11 +99,12 @@ const verifyOtp = async (req, res) => {
       const { name, phone_number, password, role, location,  profileImage, bio, skills } = tempUser;
   
       const newUser = new User({
+        name,
         email,
         phone_number,
         password,  // Already hashed
         role,
-         profileImage,
+        profileImage,
       });
       await newUser.save();
        // Role-specific handling
@@ -111,8 +112,9 @@ const verifyOtp = async (req, res) => {
             const newCustomer = new Customer({
                 userId: newUser._id,
                 name,
+                email,
                profileImage,
-                phone_number,
+               phoneNumber: phone_number || "",
                 location,
             });
             await newCustomer.save();
@@ -159,7 +161,6 @@ const getUserIdFromToken = async (req, res) => {
   }
 };
 
-
 const login = async (req, res) => {
   console.log("login API hit");
   try {
@@ -180,11 +181,13 @@ const login = async (req, res) => {
 
     console.log("User found:", user); // Debugging
 
+    // Send the token, userId, role, and name in the response
     res.status(200).json({ 
       message: "Login successful", 
-      token,        // ✅ Send the token properly
+      token,        // Send the token properly
       userId: user._id,  
-      name: user.name
+      name: user.name,
+      role: user.role // Send the role here
     });
 
   } catch (error) {
@@ -192,6 +195,5 @@ const login = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 module.exports = { register, verifyOtp, login , getUserIdFromToken};
