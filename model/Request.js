@@ -1,24 +1,31 @@
 const mongoose = require("mongoose");
 
 const requestSchema = new mongoose.Schema({
-  customerId: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Customer",
+    ref: "User", // ✅ Customer's userId
     required: true,
   },
-  providerId: {
+  providerUserId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Provider",
+    ref: "User", // ✅ Service provider's userId
     required: true,
   },
   serviceDetails: {
     type: String,
-    required: true,
+    required: false,
+  },
+  message: {
+    type: String, // Optional message from customer
   },
   status: {
     type: String,
     enum: ["Pending", "Accepted", "Rejected"],
     default: "Pending",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 
