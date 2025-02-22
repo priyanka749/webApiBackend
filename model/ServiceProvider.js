@@ -19,6 +19,7 @@ const providerSchema = new mongoose.Schema({
     unique: true,  // Prevent duplicate phone numbers
     sparse: true,  // Allow multiple documents with `null` value for `phoneNumber`
   },
+
   bio: {
     type: String,
     required: true,
@@ -38,6 +39,8 @@ const providerSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  services: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }],
+
 });
 
 const ServiceProvider = mongoose.model("Provider", providerSchema);
