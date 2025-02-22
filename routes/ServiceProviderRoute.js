@@ -1,14 +1,15 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../middleware/uploads"); // Ensure this is correct
 const providerController = require("../controller/ServiceProviderController");
 
-// Get all providers
-router.get("/", providerController.getServiceProviders); // Use getServiceProviders, not findAll
+// ✅ Fetch all providers
+router.get("/", providerController.getServiceProviders);
 
-// Get provider by ID
-router.get("/:id", providerController.getServiceProviderProfile);
+// ✅ Fetch specific provider profile
+router.get("/profile/:id", providerController.getServiceProviderProfile);
 
-// Update provider profile
-router.put("/:id", providerController.updateServiceProviderProfile);
+// ✅ Update provider profile (Fix Multer usage!)
+router.put("/:id", upload.single("profileImage"), providerController.updateServiceProviderProfile);
 
 module.exports = router;

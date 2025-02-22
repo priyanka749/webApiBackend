@@ -1,6 +1,7 @@
 const express = require("express");
 const { register, verifyOtp, login, getUserIdFromToken} = require("../controller/AuthController");
 const multer = require("multer");
+const { authenticateToken } = require("../security/Auth");
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ const upload = multer({ storage: storage });
 router.post("/register", upload.single("image"), register);
 router.post("/verify-otp", verifyOtp);
 router.post("/login", login);
-router.post("/get-user-profile", getUserIdFromToken);
+router.post("/get-user-profile",authenticateToken, getUserIdFromToken);
 
 
 

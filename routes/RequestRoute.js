@@ -1,10 +1,30 @@
 const express = require("express");
 const router = express.Router();
-const requestController = require("../controller/requestcontroller");
+const {
+  sendRequest,
+  getRequestsByUser,
+  updateRequestStatus,
+  getNotifications,
+  markNotificationAsRead,
+  getAllRequestsForProviders,
+} = require("../controller/requestcontroller");
+const { authenticateToken } = require("../security/Auth");
 
-// Ensure these functions exist in the controller
-router.post("/", requestController.createRequest);
-router.get("/:id", requestController.getProviderRequests);
-router.put("/status", requestController.updateRequestStatus);
+
+// ✅ Send a service request
+router.post("/send",authenticateToken, sendRequest);
+router.get("/all-providers", getAllRequestsForProviders);
+
+// ✅ Fetch requests by userId
+router.get("/user/:userId", getRequestsByUser);
+
+// ✅ Accept or reject a request
+router.post("/update-status", updateRequestStatus);
+
+// ✅ Get user notifications (shows on page refresh)
+router.get("/notifications", getNotifications);
+
+// ✅ Mark notification as read
+router.put("/notifications/mark-read", markNotificationAsRead);
 
 module.exports = router;

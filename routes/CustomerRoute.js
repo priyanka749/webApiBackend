@@ -1,14 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const { getAllCustomers, getCustomerProfile, updateCustomerProfile } = require("../controller/CustomerController");
+// const upload = require("../middleware/uploads"); // Import Multer middleware
+const customerController = require("../controller/CustomerController");
+const { updateCustomerProfile } = require("../controller/CustomerController");
+const multer = require("multer");
+const upload = require("../middleware/uploads"); 
 
-// Route to get all customers
-router.get("/", getAllCustomers);
+// ✅ Fetch all customers
 
-// Route to get a single customer profile by userId or ObjectId
-router.get("/profile/:id", getCustomerProfile);
+router.get("/", customerController.getAllCustomers);
+router.get("/profile/:id", customerController.getCustomerProfile);
+// router.put("/:id", upload.single("Image"), customerController.updateCustomerProfile);
+// const upload = multer({ dest: "public/uploads/" });
 
-// Route to update a customer profile by userId or ObjectId
-router.put("/profile/:id", updateCustomerProfile);
+// Ensure route is correct
+router.put("/profile/:userId", upload.single("profileImage"), updateCustomerProfile);
+
+
 
 module.exports = router;
