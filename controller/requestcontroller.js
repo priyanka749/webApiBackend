@@ -86,38 +86,47 @@ const updateRequestStatus = async (req, res) => {
       return res.status(401).json({ error: "Unauthorized: User not logged in" });
     }
 
-    const { requestId, status } = req.body;
-
-    if (!requestId || !["Accepted", "Rejected"].includes(status)) {
-      return res.status(400).json({ error: "Invalid request ID or status" });
+    // Ensure the logged-in user is an admin or the provider for the request
+    if (!(req.user.role === "Admin" || req.user.id === req.body.providerUserId)) {
+      return res.status(403).json({ error: "Unauthorized: You are not authorized to perform this action" });
     }
 
+    const { requestId, status } = req.body;
+
+    if (!requestId || !["Accepted", "Canceled"].includes(status)) {
+      return res.status(400).json({ error: "Invalid request ID or status. It must be 'Accepted' or 'Canceled'." });
+    }
+
+    // Fetch the request by ID
     const request = await Request.findById(requestId);
     if (!request) {
       return res.status(404).json({ error: "Request not found" });
     }
 
-    request.status = status;
-    // smtp mailer
-    // nodemailer
-    
-    await request.save();
+    // If the logged-in user is an admin, they can change the status
+    if (req.user.role === "Admin" || request.providerUserId.toString() === req.user.id) {
+      // Update the status of the request
+      request.status = status;
+      await request.save();
 
-    // ✅ Store Notification for Customer
-    const notification = new Notification({
-      userId: request.userId, // Notify the customer who made the request
-      message: `🔔 Your service request has been ${status} by the provider.`,
-    });
+      // ✅ Notify the customer about the provider's decision (Accepted or Canceled)
+      const notificationMessage = `🔔 Your service request has been ${status.toLowerCase()} by the provider/admin.`;
+      const notification = new Notification({
+        userId: request.userId, // Notify the customer who made the request
+        message: notificationMessage,
+      });
+      await notification.save();
 
-    await notification.save(); // ✅ Notification stored in DB
-
-    res.json({ message: `Request ${status} successfully`, request });
+      // Return the response to the provider/admin
+      res.json({ message: `Request ${status} successfully`, request });
+    } else {
+      res.status(403).json({ error: "Unauthorized: You do not have permission to update this request." });
+    }
   } catch (error) {
     console.error("❌ Error updating request status:", error);
     res.status(500).json({ error: "Error updating request status" });
   }
 };
-
 // ✅ Fetch Notifications for Logged-in User (Shows on Page Refresh)
 const getNotifications = async (req, res) => {
   try {
